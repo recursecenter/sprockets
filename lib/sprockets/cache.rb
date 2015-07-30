@@ -88,6 +88,8 @@ module Sprockets
             ms = "(#{((Time.now.to_f - start) * 1000).to_i}ms)"
             "Sprockets Cache miss #{peek_key(key)}  #{ms}"
           end
+        else
+          puts "\n\nCACHE HIT\n\n"
         end
         @fetch_cache.set(expanded_key, value)
       end
