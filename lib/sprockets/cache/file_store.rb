@@ -79,6 +79,13 @@ module Sprockets
       #
       # Returns Object value.
       def set(key, value)
+        unless @caller_counts
+          @caller_counts = Hash.new { |h, k| h[k] = 0 }
+        end
+
+        @caller_counts[caller] += 1
+        puts @caller_counts
+
         unless @set_called
           @set_called = true
         end
