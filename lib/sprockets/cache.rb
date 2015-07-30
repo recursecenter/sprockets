@@ -84,15 +84,15 @@ module Sprockets
       if value.nil?
         value = @cache_wrapper.get(expanded_key)
         if value.nil?
+          @misses[key] += 1
+          puts @misses.values.reduce(:+)
+
           value = yield
           @cache_wrapper.set(expanded_key, value)
           @logger.debug do
             ms = "(#{((Time.now.to_f - start) * 1000).to_i}ms)"
             "Sprockets Cache miss #{peek_key(key)}  #{ms}"
           end
-        else
-          @misses[key] += 1
-          puts @misses.values.reduce(:+)
         end
         @fetch_cache.set(expanded_key, value)
       end
