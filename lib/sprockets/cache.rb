@@ -62,6 +62,8 @@ module Sprockets
       @cache_wrapper = get_cache_wrapper(cache)
       @fetch_cache   = Cache::MemoryStore.new(1024)
       @logger        = logger
+
+      @misses = Hash.new { |h, k| h[k] = 0 }
     end
 
     # Public: Prefer API to retrieve and set values in the cache store.
@@ -88,6 +90,9 @@ module Sprockets
             ms = "(#{((Time.now.to_f - start) * 1000).to_i}ms)"
             "Sprockets Cache miss #{peek_key(key)}  #{ms}"
           end
+        else
+          @misses[key] += 1
+          puts @misses.values.reduce(:+)
         end
         @fetch_cache.set(expanded_key, value)
       end
