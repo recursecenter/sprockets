@@ -18,14 +18,6 @@ module Sprockets
     include DigestUtils, PathUtils, ProcessorUtils, URIUtils
     include Engines, Mime, Processing, Resolve, Transformers
 
-    def cache_key(uri)
-      _, _, path, query = split_file_uri(uri)
-
-      relative_path = path.dup[root] = ""
-
-      "#{relative_path}?#{query}"
-    end
-
     # Public: Load Asset by AssetURI.
     #
     # uri - AssetURI
@@ -34,7 +26,7 @@ module Sprockets
     def load(uri)
       filename, params = parse_asset_uri(uri)
       if params.key?(:id)
-        unless asset = cache.get("asset-uri:#{VERSION}:#{cache_key(uri)}", true)
+        unless asset = cache.get("asset-uri:#{VERSION}:#{uri}", true)
           id = params.delete(:id)
           uri_without_id = build_asset_uri(filename, params)
           asset = load_asset_by_uri(uri_without_id, filename, params)
@@ -143,8 +135,8 @@ module Sprockets
         }.compact.max
         asset[:mtime] ||= self.stat(filename).mtime.to_i
 
-        cache.set("asset-uri:#{VERSION}:#{cache_key(asset[:uri])}", asset, true)
-        cache.set("asset-uri-digest:#{VERSION}:#{cache_key(uri)}:#{asset[:dependencies_digest]}", asset[:uri], true)
+        cache.set("asset-uri:#{VERSION}:#{asset[:uri]}", asset, true)
+        cache.set("asset-uri-digest:#{VERSION}:#{uri}:#{asset[:dependencies_digest]}", asset[:uri], true)
 
         asset
       end
