@@ -62,8 +62,6 @@ module Sprockets
       @cache_wrapper = get_cache_wrapper(cache)
       @fetch_cache   = Cache::MemoryStore.new(1024)
       @logger        = logger
-
-      @misses = Hash.new { |h, k| h[k] = 0 }
     end
 
     # Public: Prefer API to retrieve and set values in the cache store.
@@ -84,9 +82,6 @@ module Sprockets
       if value.nil?
         value = @cache_wrapper.get(expanded_key)
         if value.nil?
-          @misses[key] += 1
-          puts @misses.values.reduce(:+)
-
           value = yield
           @cache_wrapper.set(expanded_key, value)
           @logger.debug do
