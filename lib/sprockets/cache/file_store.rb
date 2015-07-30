@@ -79,6 +79,11 @@ module Sprockets
       #
       # Returns Object value.
       def set(key, value)
+        unless @set_called
+          @set_called = true
+          puts caller
+        end
+
         path = File.join(@root, "#{key}.cache")
 
         # Ensure directory exists
