@@ -25,7 +25,7 @@ module Sprockets
     # Returns Asset.
     def load(uri)
       filename, params = parse_asset_uri(uri)
-      p [filename, params]
+      p [uri, filename, params]
       if params.key?(:id)
         unless asset = cache.get("asset-uri:#{VERSION}:#{uri}", true)
           id = params.delete(:id)
